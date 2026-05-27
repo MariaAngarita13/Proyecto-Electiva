@@ -10,7 +10,11 @@ import os
 app = Flask(__name__)
 
 # ─── CORS ───
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": [
+    "http://localhost:4200",
+    "http://localhost:4201",
+    "https://proyecto-electiva-2.onrender.com",
+]}})
 
 app.config["CACHE_TYPE"]            = "SimpleCache"
 app.config["CACHE_DEFAULT_TIMEOUT"] = 60
