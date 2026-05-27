@@ -1,0 +1,107 @@
+<div class="login-container">
+  <div class="login-card">
+
+    <h1 class="game-title">⚓ Batalla Naval</h1>
+    <p class="subtitle" *ngIf="empresaDetectada">🏢 {{ empresaDetectada }}</p>
+    <p class="subtitle" *ngIf="!empresaDetectada">Selecciona tu rol para continuar</p>
+
+    <!-- ═══ PASO 1: Elegir rol ═══ -->
+    <div *ngIf="!rolSeleccionado">
+      <div class="rol-selector">
+        <button class="rol-btn" (click)="seleccionarRol('admin')">
+          <span class="rol-icon">🛡️</span>
+          <span class="rol-label">Administrador</span>
+          <span class="rol-desc">Acceso al panel de gestión</span>
+        </button>
+        <button class="rol-btn" (click)="seleccionarRol('jugador')">
+          <span class="rol-icon">🎮</span>
+          <span class="rol-label">Jugador</span>
+          <span class="rol-desc">Jugar y ver estadísticas</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ PASO 2: Formulario según rol ═══ -->
+    <div *ngIf="rolSeleccionado">
+
+      <!-- Tabs: jugador ve login + registro, admin solo login -->
+      <div class="tabs">
+        <button class="tab-btn" [class.tab-active]="modo === 'login'"
+                (click)="cambiarModo('login')">Iniciar sesión</button>
+        <button class="tab-btn" [class.tab-active]="modo === 'registro'"
+                (click)="cambiarModo('registro')"
+                *ngIf="rolSeleccionado === 'jugador'">Registrarse</button>
+      </div>
+
+      <div class="error-msg"   *ngIf="error">⚠️ {{ error }}</div>
+      <div class="success-msg" *ngIf="exitoRegistro">{{ exitoRegistro }}</div>
+
+      <!-- LOGIN -->
+      <form *ngIf="modo === 'login'" (ngSubmit)="login()">
+        <div class="input-group">
+          <label>Correo electrónico</label>
+          <input type="email" [(ngModel)]="correo" name="correo"
+                 required placeholder="correo@empresaa.com"
+                 autocomplete="email" (input)="onCorreoChange()">
+          <span class="empresa-chip" *ngIf="empresaDetectada">
+            ✅ {{ empresaDetectada }}
+          </span>
+          <span class="empresa-chip empresa-chip--error"
+                *ngIf="correo.includes('@') && !empresaDetectada">
+            ❌ Empresa no reconocida
+          </span>
+        </div>
+        <div class="input-group">
+          <label>Contraseña</label>
+          <input type="password" [(ngModel)]="password" name="password"
+                 required placeholder="Tu contraseña"
+                 autocomplete="current-password">
+        </div>
+        <button type="submit" class="login-btn" [disabled]="loading">
+          <span *ngIf="!loading">Ingresar</span>
+          <span *ngIf="loading" class="spinner">Verificando...</span>
+        </button>
+        <p class="switch-link" *ngIf="rolSeleccionado === 'jugador'">
+          ¿No tienes cuenta? <a (click)="cambiarModo('registro')">Regístrate aquí</a>
+        </p>
+      </form>
+
+      <!-- REGISTRO (solo jugadores) -->
+      <form *ngIf="modo === 'registro' && rolSeleccionado === 'jugador'" (ngSubmit)="registro()">
+        <div class="input-group">
+          <label>Nombre completo</label>
+          <input type="text" [(ngModel)]="nombre" name="nombre"
+                 required placeholder="Tu nombre">
+        </div>
+        <div class="input-group">
+          <label>Correo electrónico</label>
+          <input type="email" [(ngModel)]="correoReg" name="correoReg"
+                 required placeholder="correo@empresaa.com">
+        </div>
+        <div class="input-group">
+          <label>Contraseña</label>
+          <input type="password" [(ngModel)]="passwordReg" name="passwordReg"
+                 required placeholder="Mínimo 6 caracteres">
+        </div>
+        <div class="input-group">
+          <label>Confirmar contraseña</label>
+          <input type="password" [(ngModel)]="passwordConfirm" name="passwordConfirm"
+                 required placeholder="Repite la contraseña">
+        </div>
+        <button type="submit" class="login-btn" [disabled]="loading">
+          <span *ngIf="!loading">Crear cuenta</span>
+          <span *ngIf="loading" class="spinner">Registrando...</span>
+        </button>
+        <p class="switch-link">
+          ¿Ya tienes cuenta? <a (click)="cambiarModo('login')">Inicia sesión</a>
+        </p>
+      </form>
+
+      <!-- Volver -->
+      <p class="switch-link" style="margin-top: 1rem">
+        <a (click)="volverRol()">← Cambiar rol</a>
+      </p>
+
+    </div>
+  </div>
+</div>

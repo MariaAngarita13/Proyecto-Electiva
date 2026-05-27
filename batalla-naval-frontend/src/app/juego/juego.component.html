@@ -1,0 +1,240 @@
+<div class="game-app">
+  <!-- ═══ HEADER ═══ -->
+  <header class="game-header">
+    <div class="header-brand">
+      <span class="brand-anchor">⚓</span>
+      <div class="brand-text">
+        <span class="brand-name">Batalla Naval</span>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div
+        class="phase-badge"
+        [class.phase-placing]="phase === 'placing'"
+        [class.phase-playing]="phase === 'playing'"
+        [class.phase-finished]="phase === 'finished'"
+      >
+        {{
+          phase === "placing"
+            ? "📍 Colocando barcos"
+            : phase === "playing"
+              ? "⚔️ En batalla"
+              : "🏁 Partida terminada"
+        }}
+      </div>
+    </div>
+
+    <nav class="header-nav">
+      <a class="nav-item active" (click)="irA('/juego')">🎮 Jugar</a>
+      <a class="nav-item" (click)="irA('/mis-resultados')">📋 Resultados</a>
+      <a class="nav-item" (click)="irA('/ranking')">🏆 Ranking</a>
+      <button class="logout-btn" (click)="logout()">Salir</button>
+    </nav>
+  </header>
+
+  <!-- ═══ ARENA ═══ -->
+  <main class="game-arena">
+    <!-- Message banner -->
+    <div
+      class="msg-banner"
+      [class.banner-my]="isMyTurn && phase === 'playing'"
+      [class.banner-ai]="!isMyTurn && phase === 'playing'"
+    >
+      <span class="banner-icon">
+        {{ phase === "placing" ? "🚢" : isMyTurn ? "🎯" : "🤖" }}
+      </span>
+      {{ message }}
+    </div>
+
+    <!-- Boards row -->
+    <div class="boards-row">
+      <!-- MY BOARD -->
+      <div class="board-col">
+        <div class="board-header">
+          <span class="board-title">🛡️ Tu flota</span>
+          <div class="ships-status">
+            <span
+              *ngFor="let s of myShips"
+              class="ship-ind"
+              [class.ind-sunk]="s.sunk"
+              >▰</span
+            >
+          </div>
+        </div>
+        <div class="ocean-board my-board">
+          <div class="board-grid">
+            <div class="g-corner"></div>
+            <div *ngFor="let c of cols" class="g-label-col">{{ c }}</div>
+            <ng-container *ngFor="let row of myRows; let r = index">
+              <div class="g-label-row">{{ rows[r] }}</div>
+              <div
+                *ngFor="let cell of row"
+                class="ocean-cell"
+                [ngClass]="getCellClass(cell, 'my')"
+                (mouseenter)="
+                  phase === 'placing' && previewShip(cell.row, cell.col)
+                "
+                (mouseleave)="phase === 'placing' && clearPreview()"
+                (click)="phase === 'placing' && placeShip(cell.row, cell.col)"
+              >
+                <span class="cell-icon" *ngIf="cell.state === 'hit'">💥</span>
+                <span class="cell-icon miss-dot" *ngIf="cell.state === 'miss'"
+                  >·</span
+                >
+                <span class="cell-icon" *ngIf="cell.state === 'sunk'">☠</span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <!-- VS DIVIDER -->
+      <div class="vs-divider">
+        <div class="vs-line"></div>
+        <div class="vs-badge">VS</div>
+        <div class="vs-line"></div>
+        <div class="turn-chip" *ngIf="phase === 'playing'">
+          {{ isMyTurn ? "← Atacas tú" : "IA ataca →" }}
+        </div>
+      </div>
+
+      <!-- ENEMY BOARD -->
+      <div
+        class="board-col"
+        [class.board-disabled]="phase !== 'playing' || !isMyTurn"
+      >
+        <div class="board-header">
+          <span class="board-title">🎯 Flota enemiga</span>
+          <div class="ships-status">
+            <span
+              *ngFor="let s of enemyShips"
+              class="ship-ind"
+              [class.ind-sunk]="s.sunk"
+              >▰</span
+            >
+          </div>
+        </div>
+        <div
+          class="ocean-board enemy-board"
+          [class.ocean-active]="isMyTurn && phase === 'playing'"
+        >
+          <div class="board-grid">
+            <div class="g-corner"></div>
+            <div *ngFor="let c of cols" class="g-label-col">{{ c }}</div>
+            <ng-container *ngFor="let row of enemyRows; let r = index">
+              <div class="g-label-row">{{ rows[r] }}</div>
+              <div
+                *ngFor="let cell of row"
+                class="ocean-cell"
+                [ngClass]="getCellClass(cell, 'enemy')"
+                [class.cell-fire]="
+                  phase === 'playing' && isMyTurn && cell.state === 'empty'
+                "
+                (click)="fireAt(cell.row, cell.col)"
+              >
+                <span class="cell-icon" *ngIf="cell.state === 'hit'">💥</span>
+                <span class="cell-icon miss-dot" *ngIf="cell.state === 'miss'"
+                  >·</span
+                >
+                <span class="cell-icon" *ngIf="cell.state === 'sunk'">☠</span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /boards-row -->
+
+    <!-- ═══ CONTROLS BAR (bottom, solo en placing) ═══ -->
+    <div class="controls-bar" *ngIf="phase === 'placing'">
+      <div class="ships-strip">
+        <span
+          *ngFor="let s of shipSizes; let i = index"
+          class="ship-dot"
+          [class.dot-placed]="i < currentShipIndex"
+          [class.dot-current]="i === currentShipIndex"
+        >
+          <span *ngFor="let _ of getArray(s)" class="ship-seg"></span>
+        </span>
+      </div>
+
+      <button class="orient-btn" (click)="toggleOrientation()">
+        {{ isHorizontal ? "↔ Horizontal" : "↕ Vertical" }}
+      </button>
+
+      <span class="ctrl-hint">Pasa el mouse y haz clic para colocar</span>
+
+      <div class="player-chip">
+        <div class="player-avatar">J{{ playerNumber }}</div>
+        <div class="player-info">
+          <span class="player-name">Jugador {{ playerNumber }}</span>
+          <span class="player-status"> 🎯 En juego </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Playing status bar (reemplaza controls durante la batalla) -->
+    <div class="status-bar" *ngIf="phase === 'playing'">
+      <div class="player-chip">
+        <div class="player-avatar">J{{ playerNumber }}</div>
+        <div class="player-info">
+          <span class="player-name">Jugador {{ playerNumber }}</span>
+          <span class="player-status" [class.status-active]="isMyTurn">
+            {{ isMyTurn ? "⚡ Tu turno" : "⏳ Esperando..." }}
+          </span>
+        </div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="fleet-stat">
+        <span class="stat-label">Tu flota</span>
+        <span class="stat-value"
+          >{{ myShips.length - (myShips | sunkCount) }}/{{
+            myShips.length
+          }}</span
+        >
+      </div>
+      <div class="stat-divider"></div>
+      <div class="fleet-stat">
+        <span class="stat-label">Flota enemiga</span>
+        <span class="stat-value"
+          >{{ enemyShips.length - (enemyShips | sunkCount) }}/{{
+            enemyShips.length
+          }}</span
+        >
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══ RESULT OVERLAY ═══ -->
+  <div class="result-overlay" *ngIf="phase === 'finished'">
+    <div
+      class="result-card"
+      [class.card-win]="winner === playerNumber"
+      [class.card-lose]="winner !== playerNumber"
+    >
+      <span class="result-emoji">{{
+        winner === playerNumber ? "🏆" : "💀"
+      }}</span>
+      <h2 class="result-title">
+        {{ winner === playerNumber ? "¡Victoria!" : "¡Derrota!" }}
+      </h2>
+      <p class="result-sub">
+        {{
+          winner === playerNumber
+            ? "Hundiste toda la flota enemiga"
+            : "Tu flota fue destruida"
+        }}
+      </p>
+      <p class="result-saved">✅ Resultado guardado en tu historial</p>
+      <div class="result-actions">
+        <button class="btn-replay" (click)="reiniciar()">
+          🔄 Jugar de nuevo
+        </button>
+        <button class="btn-ranking" (click)="irA('/ranking')">
+          🏆 Ver ranking
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

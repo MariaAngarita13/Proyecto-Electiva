@@ -1,0 +1,135 @@
+<!-- ═══ VISTA ADMIN ═══ -->
+<div class="admin-layout" *ngIf="isAdmin">
+  <nav class="admin-sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">⚓</span>
+      <span class="brand-title">Batalla Naval</span>
+      <span class="brand-sub">Admin Panel</span>
+    </div>
+    <div class="sidebar-nav">
+      <span class="nav-section-label">Gestión</span>
+      <a class="nav-item" (click)="irA('/partidas')"><span class="nav-icon">🎯</span> Partidas</a>
+      <a class="nav-item" (click)="irA('/usuarios')"><span class="nav-icon">👥</span> Usuarios</a>
+      <div class="divider"></div>
+      <span class="nav-section-label">Análisis</span>
+      <a class="nav-item active" (click)="irA('/ranking')"><span class="nav-icon">🏆</span> Ranking</a>
+      <a class="nav-item" (click)="irA('/estadisticas')"><span class="nav-icon">📊</span> Estadísticas</a>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-chip">
+        <div class="user-avatar">A</div>
+        <div>
+          <span class="user-name">Administrador</span>
+          <span class="user-role">// ADMIN ACCESS</span>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()">↩ Cerrar sesión</button>
+    </div>
+  </nav>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <span class="page-eyebrow">Análisis</span>
+        <h1 class="page-title">Ranking Global</h1>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost btn-sm" (click)="cargarRanking()">↻ Actualizar</button>
+      </div>
+    </div>
+    <div class="admin-content">
+      <div class="stats-row" *ngIf="ranking.length >= 3">
+        <div class="stat-box" style="border-left:3px solid #ffc400">
+          <span class="stat-label">🥇 Primer lugar</span>
+          <span class="stat-value" style="font-size:1.2rem">{{ ranking[0]?.nombre }}</span>
+          <span class="stat-sub">{{ ranking[0]?.victorias }} victorias</span>
+        </div>
+        <div class="stat-box" style="border-left:3px solid #b4b4b4">
+          <span class="stat-label">🥈 Segundo lugar</span>
+          <span class="stat-value" style="font-size:1.2rem">{{ ranking[1]?.nombre }}</span>
+          <span class="stat-sub">{{ ranking[1]?.victorias }} victorias</span>
+        </div>
+        <div class="stat-box" style="border-left:3px solid #b46428">
+          <span class="stat-label">🥉 Tercer lugar</span>
+          <span class="stat-value" style="font-size:1.2rem">{{ ranking[2]?.nombre }}</span>
+          <span class="stat-sub">{{ ranking[2]?.victorias }} victorias</span>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div class="card-header">
+          <span class="card-title">Tabla de posiciones</span>
+          <span class="card-count">{{ ranking.length }} jugadores</span>
+        </div>
+        <div class="card-body">
+          <div class="loading-state" *ngIf="loading"><span class="loading-dot">Cargando</span>...</div>
+          <div class="empty-state" *ngIf="!loading && ranking.length === 0">
+            <span class="empty-state-icon">🏆</span>
+            Aún no hay datos en el ranking.
+          </div>
+          <div class="ranking-list" *ngIf="!loading && ranking.length > 0">
+            <div *ngFor="let j of ranking; let i = index"
+                 class="ranking-row"
+                 [class.rank-1]="i===0" [class.rank-2]="i===1" [class.rank-3]="i===2">
+              <span class="rank-pos" [class.rank-pos-default]="i > 2">
+                {{ i===0 ? '🥇' : i===1 ? '🥈' : i===2 ? '🥉' : i+1 }}
+              </span>
+              <span class="rank-name">{{ j.nombre }}</span>
+              <span class="rank-wins">{{ j.victorias }} victorias</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VISTA JUGADOR — layout propio sin depender del juego ═══ -->
+<div *ngIf="!isAdmin" style="min-height:100vh; background:#06101e; font-family:'Segoe UI',system-ui,sans-serif;">
+
+  <!-- Header simple igual al juego -->
+  <header style="display:flex; align-items:center; justify-content:space-between; padding:10px 24px;
+                 background:#0a1830; border-bottom:1px solid rgba(30,144,255,0.14); position:sticky; top:0; z-index:10;">
+    <div style="display:flex; align-items:center; gap:8px; font-weight:800; font-size:1rem; color:#fff;">
+      <span style="font-size:1.4rem">⚓</span> Batalla Naval
+    </div>
+    <div style="padding:4px 14px; border-radius:20px; font-size:0.72rem; font-weight:700;
+                background:rgba(30,144,255,0.12); color:#4db8ff; border:1px solid rgba(30,144,255,0.25);">
+      🏆 Ranking Global
+    </div>
+    <nav style="display:flex; gap:4px; align-items:center;">
+      <a style="padding:6px 12px; border-radius:8px; color:rgba(255,255,255,0.42); cursor:pointer; font-size:0.8rem; font-weight:600;"
+         (click)="irA('/juego')">🎮 Jugar</a>
+      <a style="padding:6px 12px; border-radius:8px; color:rgba(255,255,255,0.42); cursor:pointer; font-size:0.8rem; font-weight:600;"
+         (click)="irA('/mis-resultados')">📋 Resultados</a>
+      <a style="padding:6px 12px; border-radius:8px; background:rgba(30,144,255,0.14); color:#4db8ff; cursor:pointer; font-size:0.8rem; font-weight:600;"
+         (click)="irA('/ranking')">🏆 Ranking</a>
+      <button (click)="logout()"
+              style="margin-left:6px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09);
+                     color:rgba(255,255,255,0.38); padding:6px 12px; border-radius:8px; cursor:pointer; font-size:0.78rem;">
+        Salir
+      </button>
+    </nav>
+  </header>
+
+  <div class="rj-container">
+    <div class="ranking-jugador-card">
+      <div class="rj-header">
+        <span class="rj-title">🏆 Tabla de posiciones</span>
+        <span class="rj-count">{{ ranking.length }} jugadores</span>
+      </div>
+      <div class="rj-loading" *ngIf="loading">Cargando ranking...</div>
+      <div class="rj-empty" *ngIf="!loading && ranking.length === 0">
+        <span>🏆</span>
+        <p>Aún no hay datos en el ranking.</p>
+      </div>
+      <div class="rj-list" *ngIf="!loading && ranking.length > 0">
+        <div *ngFor="let j of ranking; let i = index"
+             class="rj-row"
+             [class.rj-gold]="i===0" [class.rj-silver]="i===1" [class.rj-bronze]="i===2">
+          <span class="rj-pos">{{ i===0 ? '🥇' : i===1 ? '🥈' : i===2 ? '🥉' : i+1 }}</span>
+          <span class="rj-name">{{ j.nombre }}</span>
+          <span class="rj-wins">{{ j.victorias }} victorias</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

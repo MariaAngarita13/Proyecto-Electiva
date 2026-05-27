@@ -1,0 +1,120 @@
+/* ══════════════════════════════════════════
+   MIS RESULTADOS — mis-resultados.component.css
+   Usa variables CSS del ThemeService — cambia según la empresa
+   ══════════════════════════════════════════ */
+
+:host { display: block; }
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ── APP SHELL ── */
+.game-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg, #06101e);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: var(--text, #e0eaff);
+}
+
+/* ══ HEADER ══ */
+.game-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 24px;
+  background: var(--card-bg, #0a1830);
+  border-bottom: 1px solid var(--border-clr, rgba(30,144,255,0.14));
+  gap: 1rem; flex-shrink: 0; position: sticky; top: 0; z-index: 10;
+}
+.header-brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.brand-anchor { font-size: 1.5rem; line-height: 1; }
+.brand-name { display: block; font-size: 0.9rem; font-weight: 800; color: #fff; white-space: nowrap; }
+
+.header-nav { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.nav-item {
+  padding: 6px 12px; border-radius: 8px;
+  color: rgba(255,255,255,0.42); cursor: pointer;
+  font-size: 0.8rem; font-weight: 600; transition: all 0.15s; white-space: nowrap;
+}
+.nav-item:hover, .nav-item.active {
+  background: var(--nav-active, rgba(30,144,255,0.14));
+  color: var(--accent, #4db8ff);
+}
+.logout-btn {
+  margin-left: 6px; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09); color: rgba(255,255,255,0.38);
+  padding: 6px 12px; border-radius: 8px; cursor: pointer;
+  font-size: 0.78rem; font-weight: 600; transition: all 0.15s;
+}
+.logout-btn:hover { background: rgba(255,70,70,0.16); color: #ff6b6b; border-color: rgba(255,70,70,0.22); }
+
+/* ══ ARENA ══ */
+.game-arena {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; padding: 20px 16px; gap: 14px;
+}
+
+/* ══ STATS CARDS ══ */
+.results-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 740px;
+}
+.rs-card {
+  background: color-mix(in srgb, var(--bg, #06101e) 60%, black);
+  border-radius: 12px; padding: 16px;
+  display: flex; flex-direction: column; gap: 4px;
+  border: 1px solid var(--border-clr, rgba(30,144,255,0.2));
+}
+.rs-card.rs-wins   { border-left: 3px solid #4cff91; }
+.rs-card.rs-losses { border-left: 3px solid #ff5555; }
+.rs-card.rs-rate   { border-left: 3px solid #ffc400; }
+.rs-card.rs-total  { border-left: 3px solid var(--accent, #4db8ff); }
+
+.rs-label { font-size: 0.62rem; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+.rs-value { font-size: 1.8rem; font-weight: 900; color: #fff; line-height: 1; }
+
+/* ══ RESULTS CARD ══ */
+.results-card {
+  width: 100%; max-width: 740px;
+  background: color-mix(in srgb, var(--bg, #06101e) 60%, black);
+  border-radius: 13px;
+  border: 1px solid var(--border-clr, rgba(30,144,255,0.2));
+  overflow: hidden;
+}
+.results-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.results-title { font-size: 0.88rem; font-weight: 700; color: #fff; }
+.results-count { font-size: 0.7rem; color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.07); }
+
+.results-table { width: 100%; border-collapse: collapse; }
+.results-table th { font-size: 0.6rem; letter-spacing: 2px; color: rgba(255,255,255,0.2); text-transform: uppercase; padding: 10px 20px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 600; }
+.results-table td { padding: 12px 20px; font-size: 0.83rem; color: rgba(255,255,255,0.7); border-bottom: 1px solid rgba(255,255,255,0.04); }
+.results-table tr:last-child td { border-bottom: none; }
+.results-table tr:hover td { background: rgba(255,255,255,0.02); }
+.td-id    { color: rgba(255,255,255,0.25); font-size: 0.75rem; }
+.td-fecha { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+
+.result-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+.badge-ganada { background: rgba(76,255,145,0.1); color: #4cff91; border: 1px solid rgba(76,255,145,0.25); }
+.badge-perdida { background: rgba(255,85,85,0.1); color: #ff5555; border: 1px solid rgba(255,85,85,0.25); }
+
+.results-empty { text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.3); display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 0.83rem; }
+.results-empty span { font-size: 2rem; }
+
+.btn-jugar {
+  background: linear-gradient(135deg, var(--primary, #1e90ff), var(--secondary, #0055cc));
+  border: none; color: #fff; padding: 9px 20px; border-radius: 9px;
+  font-weight: 700; cursor: pointer; font-size: 0.82rem; transition: all 0.18s; margin-top: 6px;
+}
+.btn-jugar:hover { opacity: 0.88; transform: translateY(-1px); }
+.results-loading { text-align: center; padding: 30px; color: rgba(255,255,255,0.25); font-size: 0.8rem; }
+
+@media (max-width: 640px) {
+  .game-header { padding: 8px 12px; }
+  .nav-item { display: none; }
+  .results-stats { grid-template-columns: repeat(2, 1fr); }
+}

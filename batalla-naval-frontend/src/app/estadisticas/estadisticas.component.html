@@ -1,0 +1,126 @@
+<div class="admin-layout">
+
+  <nav class="admin-sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">⚓</span>
+      <span class="brand-title">Batalla Naval</span>
+      <span class="brand-sub">Admin Panel</span>
+    </div>
+    <div class="sidebar-nav">
+      <span class="nav-section-label">Gestión</span>
+      <a class="nav-item" (click)="irA('/partidas')">
+        <span class="nav-icon">🎯</span> Partidas
+      </a>
+      <a class="nav-item" (click)="irA('/usuarios')">
+        <span class="nav-icon">👥</span> Usuarios
+      </a>
+      <div class="divider"></div>
+      <span class="nav-section-label">Análisis</span>
+      <a class="nav-item" (click)="irA('/ranking')">
+        <span class="nav-icon">🏆</span> Ranking
+      </a>
+      <a class="nav-item active" (click)="irA('/estadisticas')">
+        <span class="nav-icon">📊</span> Estadísticas
+      </a>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-chip">
+        <div class="user-avatar">A</div>
+        <div>
+          <span class="user-name">Administrador</span>
+          <span class="user-role">// ADMIN ACCESS</span>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()">↩ Cerrar sesión</button>
+    </div>
+  </nav>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <span class="page-eyebrow">Análisis</span>
+        <h1 class="page-title">Estadísticas</h1>
+      </div>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- Buscador -->
+      <div class="admin-card">
+        <div class="card-header">
+          <span class="card-title">Consultar por usuario</span>
+        </div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">ID de usuario</label>
+              <input type="number" class="form-input" [(ngModel)]="usuarioId"
+                     placeholder="Ej: 4" min="1" style="max-width:120px">
+            </div>
+            <button class="btn btn-primary" (click)="buscar()">Consultar</button>
+          </div>
+          <div class="alert alert-error" *ngIf="error" style="margin-top:12px">
+            {{ error }}
+          </div>
+        </div>
+      </div>
+
+      <div class="loading-state" *ngIf="loading">
+        <span class="loading-dot">Cargando estadísticas</span>...
+      </div>
+
+      <!-- Resultados -->
+      <div *ngIf="stats && !loading">
+        <div class="stats-row">
+          <div class="stat-box blue">
+            <span class="stat-label">Total partidas</span>
+            <span class="stat-value">{{ stats.total }}</span>
+            <span class="stat-sub">jugadas en total</span>
+          </div>
+          <div class="stat-box green">
+            <span class="stat-label">Victorias</span>
+            <span class="stat-value">{{ stats.ganadas }}</span>
+            <span class="stat-sub">partidas ganadas</span>
+          </div>
+          <div class="stat-box red">
+            <span class="stat-label">Derrotas</span>
+            <span class="stat-value">{{ stats.perdidas }}</span>
+            <span class="stat-sub">partidas perdidas</span>
+          </div>
+          <div class="stat-box amber">
+            <span class="stat-label">Win rate</span>
+            <span class="stat-value">{{ winRate() }}%</span>
+            <span class="stat-sub">tasa de victorias</span>
+          </div>
+        </div>
+
+        <!-- Barra de progreso win rate -->
+        <div class="admin-card">
+          <div class="card-header">
+            <span class="card-title">Rendimiento — Usuario #{{ usuarioId }}</span>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="font-size:0.78rem;color:var(--text-dim)">Victorias vs Derrotas</span>
+                <span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-muted)">
+                  {{ stats.ganadas }} / {{ stats.total }}
+                </span>
+              </div>
+              <div style="height:8px;background:var(--bg3);border-radius:8px;overflow:hidden;border:1px solid var(--border)">
+                <div style="height:100%;background:linear-gradient(90deg,#27ae60,#2ecc71);border-radius:8px;transition:width .5s ease"
+                     [style.width]="winRate() + '%'">
+                </div>
+              </div>
+              <div style="display:flex;gap:16px;font-size:0.75rem">
+                <span style="color:#2ecc71">● Ganadas: {{ stats.ganadas }}</span>
+                <span style="color:var(--red-bright)">● Perdidas: {{ stats.perdidas }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

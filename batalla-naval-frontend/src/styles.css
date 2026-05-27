@@ -1,0 +1,20 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: var(--background-color, #f0f4f8);
+  color: #333;
+}
+
+:root {
+  --primary-color: #003366;
+  --secondary-color: #FFD700;
+  --background-color: #f0f4f8;
+  --text-color: #ffffff;
+}
+
+

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Batalla Naval</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      width: 100vw;
+      background: #06101e;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 40px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(30,144,255,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(192,57,43,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4rem;
+      width: 100%;
+      animation: fadeUp 0.4s ease;
+    }
+
+    .header { text-align: center; }
+    .header-icon { font-size: 5rem; display: block; margin-bottom: 20px; }
+    .header-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 4rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -2px;
+      display: block;
+    }
+    .header-sub {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.35);
+      margin-top: 12px;
+      display: block;
+    }
+
+    .cards {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .card {
+      flex: 1;
+      max-width: 420px;
+      background: #0d1f3c;
+      border-radius: 24px;
+      padding: 3.5rem 3rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer;
+      transition: all 0.22s ease;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 5px;
+      border-radius: 24px 24px 0 0;
+    }
+    .card:hover { transform: translateY(-8px); }
+
+    .card-admin::before { background: linear-gradient(90deg, #c0392b, #e74c3c); }
+    .card-admin:hover { border-color: rgba(192,57,43,0.4); box-shadow: 0 24px 60px rgba(192,57,43,0.18); }
+    .card-admin .card-icon { background: rgba(192,57,43,0.12); border: 1px solid rgba(192,57,43,0.25); }
+    .card-admin .card-btn { background: #c0392b; }
+    .card-admin .card-btn:hover { background: #e74c3c; }
+
+    .card-jugador::before { background: linear-gradient(90deg, #1e90ff, #4db8ff); }
+    .card-jugador:hover { border-color: rgba(30,144,255,0.4); box-shadow: 0 24px 60px rgba(30,144,255,0.18); }
+    .card-jugador .card-icon { background: rgba(30,144,255,0.12); border: 1px solid rgba(30,144,255,0.25); }
+    .card-jugador .card-btn { background: linear-gradient(135deg, #1e90ff, #0055cc); }
+    .card-jugador .card-btn:hover { opacity: 0.88; }
+
+    .card-icon {
+      width: 90px;
+      height: 90px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      margin: 0 auto 1.8rem;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.9rem;
+      font-weight: 900;
+      color: #fff;
+      display: block;
+      margin-bottom: 2rem;
+    }
+
+    .card-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    @keyframes fadeUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    @media (max-width: 700px) {
+      .cards { flex-direction: column; align-items: center; }
+      .card { max-width: 100%; }
+      .header-title { font-size: 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="header-icon">⚓</span>
+      <span class="header-title">Batalla Naval</span>
+      <span class="header-sub">¿Cómo deseas ingresar?</span>
+    </div>
+
+    <div class="cards">
+      <div class="card card-admin" onclick="window.location.href='http://localhost:4200'">
+        <div class="card-icon">🛡️</div>
+        <span class="card-title">Administrador</span>
+        <button class="card-btn">Ingresar</button>
+      </div>
+
+      <div class="card card-jugador" onclick="window.location.href='http://localhost:4201'">
+        <div class="card-icon">🎮</div>
+        <span class="card-title">Jugador</span>
+        <button class="card-btn">Ingresar</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<div class="game-app">
+
+  <!-- Header igual al juego -->
+  <header class="game-header">
+    <div class="header-brand">
+      <span class="brand-anchor">⚓</span>
+      <div class="brand-text">
+        <span class="brand-name">Batalla Naval</span>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="phase-badge phase-playing">📋 Mis Resultados</div>
+    </div>
+    <nav class="header-nav">
+      <a class="nav-item" (click)="irA('/juego')">🎮 Jugar</a>
+      <a class="nav-item active" (click)="irA('/mis-resultados')">📋 Resultados</a>
+      <a class="nav-item" (click)="irA('/ranking')">🏆 Ranking</a>
+      <button class="logout-btn" (click)="logout()">Salir</button>
+    </nav>
+  </header>
+
+  <main class="game-arena">
+
+    <!-- Stats personales -->
+    <div class="results-stats">
+      <div class="rs-card rs-total">
+        <span class="rs-label">Total partidas</span>
+        <span class="rs-value">{{ partidas.length }}</span>
+      </div>
+      <div class="rs-card rs-wins">
+        <span class="rs-label">Victorias</span>
+        <span class="rs-value">{{ getCount('ganada') }}</span>
+      </div>
+      <div class="rs-card rs-losses">
+        <span class="rs-label">Derrotas</span>
+        <span class="rs-value">{{ getCount('perdida') }}</span>
+      </div>
+      <div class="rs-card rs-rate">
+        <span class="rs-label">Win rate</span>
+        <span class="rs-value">{{ getWinRate() }}%</span>
+      </div>
+    </div>
+
+    <!-- Tabla de resultados -->
+    <div class="results-card">
+      <div class="results-card-header">
+        <span class="results-title">📋 Historial de {{ usuarioNombre }}</span>
+        <span class="results-count">{{ partidas.length }} partidas</span>
+      </div>
+
+      <div class="results-loading" *ngIf="loading">Cargando...</div>
+
+      <div class="results-empty" *ngIf="!loading && partidas.length === 0">
+        <span>🎮</span>
+        <p>Aún no has jugado ninguna partida.</p>
+        <button class="btn-jugar" (click)="irA('/juego')">¡Jugar ahora!</button>
+      </div>
+
+      <table class="results-table" *ngIf="!loading && partidas.length > 0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Resultado</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of partidas; let i = index">
+            <td class="td-id">{{ i + 1 }}</td>
+            <td>
+              <span class="result-badge"
+                    [class.badge-ganada]="p.resultado === 'ganada'"
+                    [class.badge-perdida]="p.resultado === 'perdida'">
+                {{ p.resultado === 'ganada' ? '🏆 Ganada' : '💀 Perdida' }}
+              </span>
+            </td>
+            <td class="td-fecha">{{ p.fecha || p.fecha_partida || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
